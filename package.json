@@ -5,6 +5,7 @@
   "type": "module",
   "main": "bin/index.js",
   "scripts": {
+    "start": "tsc && tsc-alias && node bin/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
