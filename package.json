@@ -1,0 +1,29 @@
+{
+  "name": "candidabot",
+  "version": "1.0.0",
+  "description": "A script to answer jobs application",
+  "type": "module",
+  "main": "bin/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sacramentix/candidabot.git"
+  },
+  "author": "Sacramentix",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sacramentix/candidabot/issues"
+  },
+  "homepage": "https://github.com/Sacramentix/candidabot#readme",
+  "devDependencies": {
+    "@types/node": "^15.12.2",
+    "@types/nodemailer": "^6.4.2",
+    "tsc-alias": "^1.3.2",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "nodemailer": "^6.6.1"
+  }
+}
