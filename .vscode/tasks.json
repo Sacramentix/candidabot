@@ -1,0 +1,47 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "TSC : build",
+            "command": "tsc",
+            "type": "shell",
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "TSC : watch",
+            "command": "tsc -w",
+            "type": "shell",
+            "isBackground": true,
+            "problemMatcher": ["$tsc-watch"]
+        },
+        {
+            "label": "TSC-Alias",
+            "command": "tsc-alias -f",
+            "type": "shell"
+        },
+        {
+            "label": "TSC-Alias : watch",
+            "command": "tsc-alias -w -f",
+            "isBackground": true,
+            "type": "shell",
+        },
+        {
+            "label": "Build back",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "TSC : build",
+                "TSC-Alias"
+            ],
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "Dev back",
+            "dependsOrder": "parallel",
+            "dependsOn": [
+                "TSC : watch",
+                "TSC-Alias : watch"
+            ],
+            "problemMatcher": ["$tsc-watch"]
+        }
+    ]
+}
