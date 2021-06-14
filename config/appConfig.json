@@ -1,0 +1,5 @@
+{
+    "checkDelay": 5000,
+    "maxRevivals": 6,
+    "revivalsDelay": 10000
+}
