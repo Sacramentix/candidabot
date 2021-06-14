@@ -3,8 +3,10 @@ import Mail from "nodemailer/lib/mailer";
 import Fs, { FileHandle } from "fs/promises";
 import { PathLike } from "fs";
 
-var delay = 248400000;
-var mail = await getFile("mail_config.json");
+console.log("App Started!")
+
+var appConfig:AppConfig = await getJSON("appConfig.json");
+var mail:MailAccount = await getJSON("mailAccount.json");
 var transporter:Mail = await nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -19,33 +21,40 @@ async function main() {
   let d = new Date();
   d.setTime(t);
   console.log("===========================================");
-  console.log(d.toLocaleTimeString()+" New revival !")
-  var file:Revival = await getFile("revival.json");
-  for (var r of file.revivals) {
+  console.log(d.toLocaleTimeString()+" New revival !");
+  let config:Revival = await getJSON("revival.json");
+  let info:Info = await getJSON("mailInfo.json");
+  let firstHTML:string = await getFile("first.min.html");
+  let revivalHTML:string = await getFile("revival.min.html");
+  for (var r of config.revivals) {
     if (r.hasAnswer) return;
-    if(r.n >= 3) return;
-    if (r.timestamp+delay > t) return;
+    if(r.n >= appConfig.maxRevivals) return;
+    if (r.timestamp + appConfig.revivalsDelay > t) return;
     r.timestamp = t;
     console.log("revival of "+r.name+" n°"+r.n);
-    let info = transporter.sendMail({
-        from: mail.username, // sender address
+    let res = transporter.sendMail({
+        from: (r.n == 0 ? info.first.sender : info.revival.sender )+" <"+mail.username+">", // sender address
         to: r.mail, // list of receivers
-        subject: "relance", // Subject line
-        text: "relance n° " + r.n
+        subject: (r.n == 0 ? info.first.subject : info.revival.subject ), // Subject line
+        html: (r.n == 0 ? firstHTML : revivalHTML )
+      }).catch(e => {
+        console.log("Mail error");
       });
     r.n++;
   }
-  await Fs.writeFile("revival.json", JSON.stringify(file, null, "  "));
+  await Fs.writeFile("config/revival.json", JSON.stringify(config, null, "  "));
 }
 
 async function getFile(fileName:PathLike | FileHandle) {
-  return JSON.parse((await Fs.readFile(fileName)).toString());
+  return (await Fs.readFile("config/"+fileName)).toString();
 }
+async function getJSON(fileName:PathLike | FileHandle) {
+  return JSON.parse((await Fs.readFile("config/"+fileName)).toString());
+}
+main().catch(console.error);
 setInterval(async () => {
   await main().catch(console.error);
-},300000);
-
-
+},appConfig.checkDelay);
 
 interface JobsRevival {
   name: string,
@@ -59,4 +68,25 @@ interface Revival {
   revivals:JobsRevival[]
 }
 
+interface MailInfo {
+  sender: string,
+  subject: string
+}
+
+interface Info {
+  first: MailInfo,
+  revival: MailInfo
+}
+
+interface MailAccount {
+  username: string,
+  password: string
+}
+
+interface AppConfig {
+  mailDelay: number,
+  checkDelay: number,
+  maxRevivals: number,
+  revivalsDelay: number
+}
 
