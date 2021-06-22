@@ -27,9 +27,9 @@ async function main() {
   let firstHTML:string = await getFile("first.min.html");
   let revivalHTML:string = await getFile("revival.min.html");
   for (var r of config.revivals) {
-    if (r.hasAnswer) return;
-    if(r.n >= appConfig.maxRevivals) return;
-    if (r.timestamp + appConfig.revivalsDelay > t) return;
+    if (r.hasAnswer) continue;
+    if(r.n >= appConfig.maxRevivals) continue;
+    if (r.timestamp + appConfig.revivalsDelay > t) continue;
     r.timestamp = t;
     console.log("revival of "+r.name+" n°"+r.n);
     let res = transporter.sendMail({
